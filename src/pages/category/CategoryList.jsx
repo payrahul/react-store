@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
 import { getCategories, deleteCategory } from "../../services/categoryService";
 
 function CategoryList(){
@@ -30,7 +30,9 @@ function CategoryList(){
                 </h1>
 
                 <button className="bg-green-600 text-white px-4 py-2 rounded">
-                    Add Category
+                    <Link to="/categories/create" className="bg-green-600 text-white px-4 py-2 rounded" >
+                        Add Category
+                    </Link>
                 </button>
             </div>
             <table className="w-full">
