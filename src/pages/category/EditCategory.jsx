@@ -1,67 +1,56 @@
-import { useState }  from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getCategory } from "../../services/categoryService";
+import { updateCategory } from "../../services/categoryService";
 
-function CreateCategory(){
+
+function EditCategory(){
+
     const [formData, setFormData] = useState({
         name:"",
         slug:""
     });
 
     const [errors, setErrors] = useState({});
-
     const [loading, setLoading] = useState(false);
 
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        let validationErrors = {};
-
-        if (!formData.name.trim()) {
-            validationErrors.name = ["Name is required"];
-        }
-
-        if (!formData.slug.trim()) {
-            validationErrors.slug = ["Slug is required"];
-        }
-
-        setErrors(validationErrors);
-
-        // Stop here
-        if (Object.keys(validationErrors).length > 0) {
-            return;
-        }
-
-        try {
-            setLoading(true);
-
-            await axios.post(
-                "http://127.0.0.1:8000/api/categories",
-                formData
-            );
-
-            setErrors({});
+    useEffect(() => {
+        const fetchCategory = async () =>{
+            const response = await getCategory(id);
 
             setFormData({
-                name: "",
-                slug: ""
+                name: response.data.data.name,
+                slug: response.data.data.slug,
             });
+        }
+        fetchCategory();
+    },[id]);
 
-        } catch (error) {
+    const handleSubmit = async (e) =>{
+        e.preventDefault();
 
-            if (error.response?.status === 422) {
+        try{
+            setLoading(true);
+            await updateCategory(id, formData);
+            navigate('/categories')
+        }catch(error){
+            if(error.response?.status === 422){
                 setErrors(error.response.data.errors);
             }
-
         }finally{
             setLoading(false);
         }
-    };
+    }
 
-    return(
+   
+
+     return(
         <div className="bg-white rounded-lg shadow p-8">
             <h1 className="text-3xl font-bold mb-6">
-                Add Category
+                Edit Category
             </h1>
 
             <form onSubmit={handleSubmit}>
@@ -125,4 +114,4 @@ function CreateCategory(){
 
 }
 
-export default CreateCategory;
+export default EditCategory;

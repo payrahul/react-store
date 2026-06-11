@@ -10,5 +10,4 @@ export const getCategory = (id) =>axios.get(`${API_URL}/${id}`);
 export const updateCategory = (id, data) =>
     axios.put(`${API_URL}/${id}`, data);
 
-export const deleteCategory = (id) => 
-    axios.delete(`${API_URL}/${id}`);
+export const deleteCategory = (id) =>  axios.delete(`${API_URL}/${id}`);
